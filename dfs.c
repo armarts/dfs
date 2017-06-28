@@ -49,7 +49,7 @@ int main()
 
     for (i = 0; i < n; i++)
     {
-        graph[i] = err_malloc(sizeof(int) * n);
+        graph[i] = (int*) err_malloc(sizeof(int) * n);
         for (j = 0; j < n; j++)
             scanf("%d", &graph[i][j]);
 
