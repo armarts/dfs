@@ -1,6 +1,7 @@
 #include <stdio.h>
 
 #include "err_malloc.h"
+#include "fatal.h"
 
 #define TRUE 1
 #define FALSE 0
@@ -27,6 +28,12 @@ int main()
     // s - start 
     scanf("%d%d", &n, &s);
     s--; // numbering start with 0
+
+    if (n < 0)
+        fatal("Error: n must be positive");
+
+    if (s < 0 || s > n)
+        fatal("Error: 1 <= s <= n");
 
     graph = (int**) err_malloc(sizeof(int*) * n);
     used = (int*) err_malloc(sizeof(int) * n);
