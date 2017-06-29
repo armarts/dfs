@@ -6,13 +6,32 @@
 #define TRUE 1
 #define FALSE 0
 
-void dfs(int **g, int *used, int v, int n)
+enum ERROR
 {
+    OK,
+    INVALIDARG,
+    BADARG
+};
+
+int dfs(int **g, char *used, int v, int n)
+{
+    if (g == NULL || used == NULL)
+        return INVALIDARG;
+
+    if ((n < 0) || (v < 0) || (v > n))
+        return BADARG;
+
     used[v] = TRUE;
     int i;
     for (i = 0; i < n; i++)
         if ((used[i] == FALSE) && (g[v][i] == TRUE))
-            dfs(g, used, i, n);
+        {
+            int err = dfs(g, used, i, n);
+            if (err != OK)
+                return err;
+        }
+    
+    return OK;
 }
 
 int main() 
@@ -20,10 +39,10 @@ int main()
 
     int i, j;
     int **graph;
-    int *used;
     int n, s;
     int count = 0;
 
+    char *used;
     // n - graph dim
     // s - start 
     scanf("%d%d", &n, &s);
@@ -36,7 +55,7 @@ int main()
         fatal("Error: 1 <= s <= n");
 
     graph = (int**) err_malloc(sizeof(int*) * n);
-    used = (int*) err_malloc(sizeof(int) * n);
+    used = (char*) err_malloc(sizeof(char) * n);
 
     /* Graph Example 
         n = 3
@@ -55,7 +74,9 @@ int main()
 
         used[i] = FALSE;
     }
-    dfs(graph, used, s, n);
+    int err = dfs(graph, used, s, n);
+    if (err != OK)
+        printf("Error: error code - %d\n", err);
 
     for (i = 0; i < n; i++)
         free(graph[i]);
